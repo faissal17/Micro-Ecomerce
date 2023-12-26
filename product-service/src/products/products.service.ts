@@ -5,17 +5,17 @@ import { DatabaseService } from 'src/database/database.service';
 @Injectable()
 export class ProductsService {
   constructor(private readonly databaseervice: DatabaseService) {}
-  create(createProductDto: Prisma.ProductCreateInput) {
+  async create(createProductDto: Prisma.ProductCreateInput) {
     return this.databaseervice.product.create({
       data: createProductDto,
     });
   }
 
-  findAll() {
+  async findAll() {
     return this.databaseervice.product.findMany();
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return this.databaseervice.product.findUnique({
       where: {
         id,
@@ -23,7 +23,7 @@ export class ProductsService {
     });
   }
 
-  update(id: number, updateProductDto: Prisma.ProductUpdateInput) {
+  async update(id: number, updateProductDto: Prisma.ProductUpdateInput) {
     return this.databaseervice.product.update({
       where: {
         id,
@@ -32,7 +32,7 @@ export class ProductsService {
     });
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return this.databaseervice.product.delete({
       where: {
         id,
