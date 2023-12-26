@@ -10,3 +10,11 @@ datasource db {
   url  	    = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
+model Product {
+id Int @id @default(autoincrement()) @unique
+name String @unique 
+price Int 
+description String
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
+}
