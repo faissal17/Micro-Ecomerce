@@ -11,7 +11,14 @@ export class ProductsService {
     });
   }
 
-  async findAll() {
+  async findAll(name?: any) {
+    if (name) {
+      return this.databaseervice.product.findMany({
+        where: {
+          name,
+        },
+      });
+    }
     return this.databaseervice.product.findMany();
   }
 
