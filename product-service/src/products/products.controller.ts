@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Prisma } from '@prisma/client';
+import { get } from 'http';
 
 @Controller('products')
 export class ProductsController {
@@ -21,8 +22,13 @@ export class ProductsController {
   }
 
   @Get()
-  findAll(@Query('name') name?: any) {
-    return this.productsService.findAll(name);
+  findAll() {
+    return this.productsService.findAll();
+  }
+
+  @Get('search')
+  async findProductByName(@Body('name') name: string) {
+    return this.productsService.findProductByName(name);
   }
 
   @Get(':id')

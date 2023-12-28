@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 
@@ -11,15 +11,22 @@ export class ProductsService {
     });
   }
 
-  async findAll(name?: any) {
-    if (name) {
-      return this.databaseervice.product.findMany({
-        where: {
-          name,
-        },
-      });
-    }
+  async findAll() {
     return this.databaseervice.product.findMany();
+  }
+
+  async findProductByName(name: string) {
+    const products = await this.databaseervice.product.findMany({
+      where: {
+        name,
+      },
+    });
+
+    if (!products || products.length === 0) {
+      throw new NotFoundException(`Product with name '${name}' not found`);
+    }
+
+    return products;
   }
 
   async findOne(id: number) {
