@@ -21,11 +21,9 @@ export class ProductsService {
         name,
       },
     });
-
     if (!products || products.length === 0) {
-      throw new NotFoundException(`Product with name '${name}' not found`);
+      return { message: `Product with name '${name}' not found` };
     }
-
     return products;
   }
 

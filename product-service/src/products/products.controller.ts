@@ -6,11 +6,9 @@ import {
   Patch,
   Param,
   Delete,
-  Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Prisma } from '@prisma/client';
-import { get } from 'http';
 
 @Controller('products')
 export class ProductsController {
