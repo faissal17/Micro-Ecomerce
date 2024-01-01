@@ -1,28 +1,42 @@
-import { DatabaseService } from './../../../order-service/src/database/database.service';
+import { DatabaseService } from 'src/database/database.service';
 import { Injectable } from '@nestjs/common';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CategoriesService {
   constructor(private readonly Databaseservice: DatabaseService) {}
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+  create(createCategoryDto: Prisma.CategoriesCreateInput) {
+    return this.Databaseservice.categories.create({
+      data: createCategoryDto,
+    });
   }
 
   findAll() {
-    return `This action returns all categories`;
+    return this.Databaseservice.categories.findMany();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} category`;
+    return this.Databaseservice.categories.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  update(id: number, updateCategoryDto: Prisma.CategoriesUpdateInput) {
+    return this.Databaseservice.categories.update({
+      where: {
+        id,
+      },
+      data: updateCategoryDto,
+    });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} category`;
+    return this.Databaseservice.categories.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

@@ -8,15 +8,14 @@ import {
   Delete,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { Prisma } from '@prisma/client';
 
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
+  create(@Body() createCategoryDto: Prisma.CategoriesCreateInput) {
     return this.categoriesService.create(createCategoryDto);
   }
 
@@ -33,7 +32,7 @@ export class CategoriesController {
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body() updateCategoryDto: UpdateCategoryDto,
+    @Body() updateCategoryDto: Prisma.CategoriesUpdateInput,
   ) {
     return this.categoriesService.update(+id, updateCategoryDto);
   }
