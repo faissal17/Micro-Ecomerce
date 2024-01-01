@@ -23,8 +23,8 @@ model Product {
 model Categories {
   id        Int      @id @default(autoincrement()) @unique
   name      String   @unique 
+  product   Product  @relation(fields: [productId], references: [id])
   productId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  product   Product  @relation(fields: [productId], references: [id])
 }
