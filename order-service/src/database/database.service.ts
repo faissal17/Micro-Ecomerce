@@ -22,7 +22,7 @@ export class DatabaseService implements OnModuleInit {
       },
     });
   }
-  
+
   async onModuleInit() {
     try {
       await this.sequelize.authenticate();
