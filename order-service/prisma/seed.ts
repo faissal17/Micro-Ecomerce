@@ -1,4 +1,4 @@
-import { faker } from '@faker-js/faker';
+import * as faker from 'faker';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -9,24 +9,44 @@ async function userSeeder(amount: number = 5) {
       data: {
         name: faker.commerce.productName(),
         email: faker.internet.email(),
-        role: 'User',
+        role: faker.random.arrayElement(['Admin', 'User']),
       },
     });
   }
 }
-
-async function ProductSeeder(amount: number = 10) {
+async function productSeeder(amount: number = 10) {
   for (let i = 0; i < amount; i++) {
     await prisma.product.create({
       data: {
         name: faker.commerce.productName(),
-        price: faker.number.float({ min: 100, max: 400 }),
+        price: faker.datatype.number({ min: 100, max: 400 }),
         description: faker.commerce.productDescription(),
-        categorieId: 1,
+        categorieId: faker.datatype.number({ min: 1, max: 5 }),
       },
     });
   }
 }
-
+async function categorietSeeder(amount: number = 5) {
+  for (let i = 0; i < amount; i++) {
+    await prisma.categories.create({
+      data: {
+        name: faker.commerce.productName(),
+      },
+    });
+  }
+}
+async function orderSeeder(amount: number = 5) {
+  for (let i = 0; i < amount; i++) {
+    await prisma.order.create({
+      data: {
+        name: faker.commerce.productName(),
+        userId: faker.datatype.number({ min: 1, max: 5 }),
+        productId: 3,
+      },
+    });
+  }
+}
+orderSeeder();
 userSeeder();
-ProductSeeder();
+productSeeder();
+categorietSeeder();
