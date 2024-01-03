@@ -14,18 +14,6 @@ async function userSeeder(amount: number = 5) {
     });
   }
 }
-async function productSeeder(amount: number = 10) {
-  for (let i = 0; i < amount; i++) {
-    await prisma.product.create({
-      data: {
-        name: faker.commerce.productName(),
-        price: faker.datatype.number({ min: 100, max: 400 }),
-        description: faker.commerce.productDescription(),
-        categorieId: faker.datatype.number({ min: 1, max: 5 }),
-      },
-    });
-  }
-}
 async function categorietSeeder(amount: number = 5) {
   for (let i = 0; i < amount; i++) {
     await prisma.categories.create({
@@ -35,18 +23,31 @@ async function categorietSeeder(amount: number = 5) {
     });
   }
 }
+async function productSeeder(amount: number = 10) {
+  for (let i = 0; i < amount; i++) {
+    await prisma.product.create({
+      data: {
+        name: faker.commerce.productName(),
+        price: faker.datatype.number({ min: 100, max: 400 }),
+        description: faker.commerce.productDescription(),
+        categorieId: faker.datatype.number({ min: 0, max: 5 }),
+      },
+    });
+  }
+}
 async function orderSeeder(amount: number = 5) {
   for (let i = 0; i < amount; i++) {
     await prisma.order.create({
       data: {
         name: faker.commerce.productName(),
-        userId: faker.datatype.number({ min: 1, max: 5 }),
-        productId: 3,
+        userId: faker.datatype.number({ min: 0, max: 5 }),
+        productId: faker.datatype.number({ min: 0, max: 5 }),
       },
     });
   }
 }
-orderSeeder();
 userSeeder();
-productSeeder();
 categorietSeeder();
+productSeeder();
+orderSeeder();
+
