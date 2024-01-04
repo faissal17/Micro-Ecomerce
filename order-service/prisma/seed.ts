@@ -30,7 +30,7 @@ async function productSeeder(amount: number = 10) {
         name: faker.commerce.productName(),
         price: faker.datatype.number({ min: 100, max: 400 }),
         description: faker.commerce.productDescription(),
-        categorieId: faker.datatype.number({ min: 0, max: 5 }),
+        categorieId: 1,
       },
     });
   }
@@ -40,14 +40,13 @@ async function orderSeeder(amount: number = 5) {
     await prisma.order.create({
       data: {
         name: faker.commerce.productName(),
-        userId: faker.datatype.number({ min: 0, max: 5 }),
-        productId: faker.datatype.number({ min: 0, max: 5 }),
+        userId: 3,
+        productId: 2,
       },
     });
   }
 }
-userSeeder();
-categorietSeeder();
-productSeeder();
-orderSeeder();
-
+// userSeeder();
+// categorietSeeder();
+//  productSeeder();
+//orderSeeder();
