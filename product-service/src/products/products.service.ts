@@ -15,6 +15,18 @@ export class ProductsService {
     return this.databaseervice.product.findMany();
   }
 
+  async findProductByName(name: string) {
+    const products = await this.databaseervice.product.findMany({
+      where: {
+        name,
+      },
+    });
+    if (!products || products.length === 0) {
+      return { message: `Product with name '${name}' not found` };
+    }
+    return products;
+  }
+
   async findOne(id: number) {
     return this.databaseervice.product.findUnique({
       where: {

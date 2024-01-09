@@ -24,6 +24,11 @@ export class ProductsController {
     return this.productsService.findAll();
   }
 
+  @Get('search')
+  async findProductByName(@Body('name') name: string) {
+    return this.productsService.findProductByName(name);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(+id);
