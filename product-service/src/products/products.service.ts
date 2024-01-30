@@ -12,7 +12,12 @@ export class ProductsService {
   }
 
   async findAll() {
-    return this.databaseervice.product.findMany();
+    const products = await this.databaseervice.product.findMany();
+
+    if (!products || products.length === 0) {
+      return { message: `Product with name '${name}' not found` };
+    }
+    return products;
   }
 
   async findProductByName(name: string) {
