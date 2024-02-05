@@ -18,8 +18,9 @@ import { OrderService } from './services/order.service';
 import { PaymentMethod } from './entities/payment.entity';
 import { Order, OrderStatus } from './entities/order.entity';
 import { PaypalService } from './services/paypal.service';
+import { ConflictException } from '@nestjs/common';
 
-@Controller('payment')
+@Controller('api/payment')
 export class PaymentController {
   constructor(
     private readonly paymentService: PaymentService,
@@ -28,35 +29,21 @@ export class PaymentController {
     private readonly paypalService: PaypalService,
   ) {}
 
-  @Post()
-  create(@Body() createPaymentDto: CreatePaymentDto) {
-    return this.paymentService.create(createPaymentDto);
-  }
-
   @Get()
   findAll() {
     return this.paymentService.findAll();
-  }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.paymentService.findOne(+id);
-  // }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
-    return this.paymentService.update(+id, updatePaymentDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.paymentService.remove(+id);
   }
 
   @Post('create-stripe-payment')
   async createStripePayment(@Req() req, @Res() res) {
     try {
       const { token, orderId } = req.body;
+
+      const isOrderPayed = await this.paymentService.findByOrderId(orderId);
+
+      if(isOrderPayed){
+        throw new ConflictException("Order Already Payed !");
+      }
 
       const order = await this.orderService.findOne(orderId);
 
@@ -87,14 +74,16 @@ export class PaymentController {
         };
 
         if (await this.paymentService.create(paymentObj)) {
-          await this.orderService.update(orderId, {
-            status: OrderStatus.PAYED,
-          });
+          await this.orderService.update(orderId, {status: OrderStatus.PAYED});
         }
+
+        res.status(200).json({...paymentObj, ...order})
+      
       }
+
     } catch (error) {
       res.status(400).json({
-        error: error,
+        error: error || "An error occurred",
       });
     }
   }
@@ -103,6 +92,12 @@ export class PaymentController {
   async createPaypalPayment(@Req() req, @Res() res) {
     try {
       const { orderId } = req.body;
+
+      const isOrderPayed = await this.paymentService.findByOrderId(orderId);
+
+      if(isOrderPayed){
+        throw new ConflictException("Order Already Payed !");
+      }
 
       const order = await this.orderService.findOne(orderId);
 
@@ -120,25 +115,33 @@ export class PaymentController {
         orderTotalPrice,
         orderId,
       );
-      return res.send(payment);
+      
+      return res.status(200).send(JSON.parse(payment).links.find(link => link.rel === "approval_url").href);
+
     } catch (error) {
-      res.send(error);
-      // return res.status(500).json({ error: 'Failed to create payment', message: error.message });
+      res.status(400).json({
+        error: error || "An error occurred",
+      });
     }
   }
 
-  @Get('paypal-success')
+  @Post('paypal-success')
   async validPaypalPayment(
-    @Query('paymentId') paymentId: string,
-    @Query('orderId') orderId: Order,
-    @Query('amount') amount: string,
-    @Query('PayerID') payerId: string,
-    @Res() res,
+    @Req() req,
+    @Res() res
   ) {
+    const {paymentId, orderId, PayerID, amount} = req.body;
+
+    const isOrderPayed = await this.paymentService.findByOrderId(orderId);
+
+    if(isOrderPayed){
+      throw new ConflictException("Order Already Payed !");
+    }
+
     try {
       const payment = await this.paypalService.executePayment(
         paymentId,
-        payerId,
+        PayerID,
         +amount,
       );
 
@@ -155,9 +158,9 @@ export class PaymentController {
         await this.orderService.update(orderId, { status: OrderStatus.PAYED });
       }
 
-      res.send(paymentObj);
+      res.status(201).json(paymentObj);
     } catch (error) {
-      res.send(error);
+      res.status(400).send(error);
     }
   }
 }

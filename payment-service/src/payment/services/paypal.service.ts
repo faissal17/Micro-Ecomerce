@@ -27,8 +27,8 @@ export class PaypalService {
         },
       ],
       redirect_urls: {
-        return_url: `http://localhost:5000/payment/paypal-success?amount=${amount}&orderId=${order_id}`,
-        cancel_url: 'http://localhost:5000',
+        return_url: `http://localhost:3000/payment/success?amount=${amount}&orderId=${order_id}`,
+        cancel_url: `http://localhost:3000/payment/${order_id}`,
       },
     };
 
