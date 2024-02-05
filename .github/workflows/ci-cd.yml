@@ -17,7 +17,13 @@ jobs:
         with:
           node-version: '20' 
 
-      - name: Install dependencies
-        run: npm install
-
-    
+      - name: Install dependencies in each directory
+        run: |
+          for dir in */; do
+            if [ -f "$dir/package.json" ]; then
+              echo "Installing dependencies in $dir"
+              cd $dir
+              npm install
+              cd ..
+            fi
+          done
