@@ -16,19 +16,12 @@ export class PaymentService {
     return this.paymentRepository.save(createPaymentDto);
   }
 
+  findByOrderId(orderId: string) {
+    return this.paymentRepository.findOne({ where: { order: { id: orderId } } });
+  }  
+
   findAll() {
-    return `This action returns all payment`;
+    return this.paymentRepository.find({ relations: ["order.customer"] });
   }
-
-  findOne(id: number) {
-    return `This action returns a #${id} payment`;
-  }
-
-  update(id: number, updatePaymentDto: UpdatePaymentDto) {
-    return `This action updates a #${id} payment`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} payment`;
-  }
+    
 }

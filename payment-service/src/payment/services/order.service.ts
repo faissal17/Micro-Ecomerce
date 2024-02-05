@@ -21,8 +21,8 @@ export class OrderService {
     });
   }
 
-  async update(id: any, updatedOrder: Partial<Order>): Promise<Order> {
-    await this.orderRepository.update(id, updatedOrder);
-    return this.orderRepository.findOne(id);
+  async update(id: any, updatedOrder: Partial<Order>) /*: Promise<Order>*/ {
+    this.orderRepository.update(id, updatedOrder);
+    return await this.findOne(id);
   }
 }
